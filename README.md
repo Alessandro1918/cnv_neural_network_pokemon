@@ -35,25 +35,19 @@ Download the code:
   $ git clone https://github.com/Alessandro1918/cnv_neural_network_pokemon.git
 ```
 
-Download the dataset:
-
+Download the dataset:<br/>
 Github won’t allow directories with 100+ files, so I uploaded them separately. Get them from:
 
 ```sh
   https://www.dropbox.com/sh/vkmeeirmi4nb1tr/AACUTojKyBnJ7_FoMzPX1Gp5a?dl=0
 ```
 
-Import the required libraries;
-
-Split the dataset into Train, Validation, Test;
-
-Define the structure of the Convolutional Neural Network;
-
-Train the CNN;
-
-Show the values of Loss, Accuracy, and Plot the Training Curve;
-
-Export the model for future use;
+Import the required libraries;<br/>
+Split the dataset into Train, Validation, Test;<br/>
+Define the structure of the Convolutional Neural Network;<br/>
+Train the CNN;<br/>
+Show the values of Loss, Accuracy, and Plot the Training Curve;<br/>
+Export the model for future use;<br/>
 
 ```sh
   $ python3 cnn.py
