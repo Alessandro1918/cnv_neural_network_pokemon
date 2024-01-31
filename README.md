@@ -29,40 +29,58 @@ The artificially expanded training dataset can result in a more skillful model, 
 
 ## 🗂️ Usage:
 
-Download the code:
-
-```sh
+- Download the code:
+```
   $ git clone https://github.com/Alessandro1918/cnv_neural_network_pokemon.git
 ```
 
-Download the dataset:<br/>
-Github won’t allow directories with 100+ files, so I uploaded them separately. Get them from:
-
-```sh
+- Assemble the dataset:</br>
+Download as many images as you can (more images, better training) to a <code>dataset</code> folder, like:
+```
+cnv_neural_network_pokemon
+  ├ dataset
+  | ├ Bulbassaur
+  | | ├ img1.jpg
+  | | ├ ...
+  | | └ img20.jpg
+  | ├ Charmander
+  | ├ Pikachu
+  | └ Squirtle
+  ├ cnn.py
+  └ test.py
+```
+If you want, there is a link for the images used for this example:
+(Github won’t allow directories with 100+ files, so I uploaded them separately.)
+```
   https://www.dropbox.com/sh/vkmeeirmi4nb1tr/AACUTojKyBnJ7_FoMzPX1Gp5a?dl=0
 ```
 
-Import the required libraries;<br/>
-Split the dataset into Train, Validation, Test;<br/>
-Define the structure of the Convolutional Neural Network;<br/>
-Train the CNN;<br/>
-Show the values of Loss, Accuracy, and Plot the Training Curve;<br/>
-Export the model for future use;<br/>
+- Install the required libs:
+```
+  $ cd cnv_neural_network_pokemon      #change to that directory
+  $ pip3 install -r requirements.txt   #download dependencies
+```
 
-```sh
+- Train the network:</br>
+  - Split the dataset into Train, Validation, Test;
+  - Define the structure of the Convolutional Neural Network;
+  - Train the CNN;
+  - Show the values of Loss, Accuracy, and Plot the Training Curve;
+  - Export the model for future use;
+```
   $ python3 cnn.py
 ```
 
-Load the saved model, and use it to classify some images from the Test set:
+- Use the  model to classify some images from the Test set:
 
-```sh
+```
   $ python3 test.py
 ```
 
 
 ## ▶️ Demo time!
 
-The ```test.py``` will plot some images, with the respective classification predicted by the model. The model doesn’t have a 100% accuracy, but can get very close to it, considering how small the Training set was, and how different the images are among the same group!
+The <code>test.py</code> will plot some images, with the respective classification predicted by the model. The model doesn’t have a 100% accuracy, but can get very close to it, considering how small the Training set was, and how different the images are among the same group!
 
 You can also visualize the Data Augmentation principle here; instead of classify the original images on the Test set, we edit them with the same zooms, flips, shifts and the like we use for the Train test, with pretty good results!
 
