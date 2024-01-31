@@ -17,25 +17,25 @@ from tensorflow.keras.models import load_model
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
-
-
+# Constants:
 SEED = 339
-
 BATCH_SIZE = 8
-
 IM_SHAPE = (200, 200)
-
+EPOCHS = 30
 DATASET_DIR = 'dataset'
 DATASET_SPLITED_DIR = 'dataset_splited'
-TRAIN_DIR = os.path.join(DATASET_SPLITED_DIR, 'train')   #'dataset_splited/train'
-TEST_DIR = os.path.join(DATASET_SPLITED_DIR, 'test')   #'dataset_splited/test'
-
-
+TRAIN_DIR = os.path.join(DATASET_SPLITED_DIR, 'train')      #'dataset_splited/train'
+TEST_DIR = os.path.join(DATASET_SPLITED_DIR, 'test')        #'dataset_splited/test'
 
 # Split Input data into Training, Validation, and Test
-shutil.rmtree(DATASET_SPLITED_DIR)   # clear dir
+shutil.rmtree(DATASET_SPLITED_DIR, ignore_errors=True)      # clear dir, if exists
 print('Split data:')
-splitfolders.ratio(DATASET_DIR, output=DATASET_SPLITED_DIR, seed=SEED , ratio=(.7, 0, .3))   
+splitfolders.ratio(
+  DATASET_DIR, 
+  output=DATASET_SPLITED_DIR, 
+  seed=SEED , 
+  ratio=(.7, 0, .3)
+)
 # ratio=(.8, 0, .2): Between Train-Test (use validation_split = 0.2 and subset = "training" / "validation")
 # ratio=(.6, .2, .2)): Between Train-Val-Test (no need of validation_split, get val_generator data from VAL_DIR='splited/val')
 
@@ -43,17 +43,25 @@ print('Training data:')
 #Without data augmentation
 #train_generator = ImageDataGenerator(rescale=1./255, validation_split=0.2)       # Between Train-Validation
 # With data augmentation:
-train_generator = ImageDataGenerator(rescale=1./255, validation_split=0.2, 
-                                     rotation_range=20, width_shift_range=0.2, 
-                                     height_shift_range=0.2, shear_range=0.2, 
-                                     zoom_range=0.2, horizontal_flip=True, fill_mode='nearest')
+train_generator = ImageDataGenerator(
+    rescale=1./255, 
+    validation_split=0.2,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
 train_generator = train_generator.flow_from_directory(
     TRAIN_DIR, 
     target_size=IM_SHAPE, 
     shuffle=True, 
     seed=SEED,
     class_mode='categorical', 
-    batch_size=BATCH_SIZE, subset="training"
+    batch_size=BATCH_SIZE, 
+    subset="training"
 )
 
 print('Validation data:')
@@ -81,13 +89,19 @@ test_generator = test_generator.flow_from_directory(
 classes = list(train_generator.class_indices.keys())
 print('Classes: ' + str(classes))
 
-
-
 # Define a CNN Model
 model = Sequential()
 #Input layer:
-#Params: n. of filters to learn, kernel_size: shape of the filter , activation_function, input_shape: rows, collumns, channels
-model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(IM_SHAPE[0], IM_SHAPE[1], 3)))
+model.add(Conv2D(
+    32,                     # n. of filters to learn
+    kernel_size=(3, 3),     # shape of the filter
+    activation='relu',      # name of the activation_function
+    input_shape=(
+      IM_SHAPE[0],          # rows
+      IM_SHAPE[1],          # collumns
+      3)                    # channels
+    )
+)
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -102,38 +116,38 @@ model.add(Dense(len(classes), activation='softmax'))
 
 model.summary()
 
-
-
 # Compile the model
-model.compile(loss='categorical_crossentropy',
-              optimizer=Adam(),
-              metrics=['accuracy'])
-
-
-
-#Training
-EPOCHS = 30
+model.compile(
+    loss='categorical_crossentropy',
+    optimizer=Adam(),
+    metrics=['accuracy']
+)
 
 #Callback to save the best model
 callbacks_list = [
     ModelCheckpoint(
         filepath='model.h5',
-        monitor='accuracy',     #monitor='val_loss' 
+        monitor='accuracy',     #options: "accuracy", "val_loss" 
         save_best_only=True, 
-        verbose=1),
-    EarlyStopping(monitor='accuracy', patience=10, verbose=1)    #monitor='val_loss'
+        verbose=1
+    ),
+    EarlyStopping(
+      monitor='accuracy', 
+      patience=10, 
+      verbose=1
+    )
 ]
 
+#Training
 history = model.fit(
-        train_generator,
-        steps_per_epoch=train_generator.samples // BATCH_SIZE,
-        epochs=EPOCHS,
-        callbacks=callbacks_list,
-        validation_data=validation_generator,
-        validation_steps=validation_generator.samples // BATCH_SIZE,
-        verbose=0)
-
-
+    train_generator,
+    steps_per_epoch=train_generator.samples // BATCH_SIZE,
+    epochs=EPOCHS,
+    callbacks=callbacks_list,
+    validation_data=validation_generator,
+    validation_steps=validation_generator.samples // BATCH_SIZE,
+    verbose=0
+)
 
 #Learning Curves
 history_dict = history.history
@@ -170,8 +184,6 @@ plt.legend()
 plt.savefig('plot_learning.png')
 plt.close()
 
-
-
 #Evaluating the model
 print('\nEvaluating the model:')
 
@@ -193,8 +205,6 @@ print('Val accuracy:', score[1])
 score = model.evaluate(test_generator)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
-
-
 
 # Reports
 
