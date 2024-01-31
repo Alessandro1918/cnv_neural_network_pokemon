@@ -24,11 +24,11 @@ IM_SHAPE = (200, 200)
 EPOCHS = 30
 DATASET_DIR = 'dataset'
 DATASET_SPLITED_DIR = 'dataset_splited'
-TRAIN_DIR = os.path.join(DATASET_SPLITED_DIR, 'train')   #'dataset_splited/train'
-TEST_DIR = os.path.join(DATASET_SPLITED_DIR, 'test')   #'dataset_splited/test'
+TRAIN_DIR = os.path.join(DATASET_SPLITED_DIR, 'train')      #'dataset_splited/train'
+TEST_DIR = os.path.join(DATASET_SPLITED_DIR, 'test')        #'dataset_splited/test'
 
 # Split Input data into Training, Validation, and Test
-shutil.rmtree(DATASET_SPLITED_DIR)   # clear dir
+shutil.rmtree(DATASET_SPLITED_DIR, ignore_errors=True)      # clear dir, if exists
 print('Split data:')
 splitfolders.ratio(
   DATASET_DIR, 
