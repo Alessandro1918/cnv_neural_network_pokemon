@@ -39,7 +39,7 @@ Download as many images as you can (more images, better training) to a <code>dat
 ```
 cnv_neural_network_pokemon
   ├ dataset
-  | ├ Bulbassaur
+  | ├ Bulbasaur
   | | ├ img1.jpg
   | | ├ ...
   | | └ img20.jpg

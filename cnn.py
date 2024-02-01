@@ -114,6 +114,7 @@ model.add(Dropout(0.2))
 #Output layer:
 model.add(Dense(len(classes), activation='softmax'))
 
+# Print details about each layer of the model
 model.summary()
 
 # Compile the model
