@@ -3,10 +3,8 @@ import os, shutil, splitfolders
 #from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 #Create CNN
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, BatchNormalization, Dropout, Flatten, Conv2D, MaxPooling2D
-#Compile CNN
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 #Train
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 #Learning curves
@@ -31,10 +29,10 @@ TEST_DIR = os.path.join(DATASET_SPLITED_DIR, 'test')        #'dataset_splited/te
 shutil.rmtree(DATASET_SPLITED_DIR, ignore_errors=True)      # clear dir, if exists
 print('Split data:')
 splitfolders.ratio(
-  DATASET_DIR, 
-  output=DATASET_SPLITED_DIR, 
-  seed=SEED , 
-  ratio=(.7, 0, .3)
+    DATASET_DIR, 
+    output=DATASET_SPLITED_DIR, 
+    seed=SEED , 
+    ratio=(.7, 0, .3)
 )
 # ratio=(.8, 0, .2): Between Train-Test (use validation_split = 0.2 and subset = "training" / "validation")
 # ratio=(.6, .2, .2)): Between Train-Val-Test (no need of validation_split, get val_generator data from VAL_DIR='splited/val')
@@ -97,13 +95,11 @@ model.add(Conv2D(
     kernel_size=(3, 3),     # shape of the filter
     activation='relu',      # name of the activation_function
     input_shape=(
-      IM_SHAPE[0],          # rows
-      IM_SHAPE[1],          # collumns
-      3)                    # channels
+        IM_SHAPE[0],        # rows
+        IM_SHAPE[1],        # collumns
+        3                   # channels
     )
-)
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -120,7 +116,7 @@ model.summary()
 # Compile the model
 model.compile(
     loss='categorical_crossentropy',
-    optimizer=Adam(),
+    optimizer='adam',
     metrics=['accuracy']
 )
 
@@ -133,9 +129,9 @@ callbacks_list = [
         verbose=1
     ),
     EarlyStopping(
-      monitor='accuracy', 
-      patience=10, 
-      verbose=1
+        monitor='accuracy', 
+        patience=10, 
+        verbose=1
     )
 ]
 
@@ -213,5 +209,5 @@ print('Test accuracy:', score[1])
 #Y_pred = model.predict_generator(test_generator)   # Deprecated
 Y_pred = model.predict(test_generator)
 y_pred = np.argmax(Y_pred, axis=1)
-print('Confusion Matrix')
+print('Confusion Matrix:')
 print(confusion_matrix(test_generator.classes, y_pred))
