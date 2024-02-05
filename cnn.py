@@ -88,10 +88,14 @@ classes = list(train_generator.class_indices.keys())
 print('Classes: ' + str(classes))
 
 # Define a CNN Model
+# More on CNN architecture:
+# https://www.datacamp.com/tutorial/convolutional-neural-networks-python
+# https://pyimagesearch.com/2018/04/16/keras-and-convolutional-neural-networks-cnns/
+# https://towardsdatascience.com/building-a-convolutional-neural-network-cnn-in-keras-329fbbadc5f5
 model = Sequential()
 #Input layer:
 model.add(Conv2D(
-    32,                     # n. of filters to learn
+    64,                     # n. of filters to learn
     kernel_size=(3, 3),     # shape of the filter
     activation='relu',      # name of the activation_function
     input_shape=(
@@ -100,8 +104,10 @@ model.add(Conv2D(
         3                   # channels
     )
 ))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling2D(pool_size=(4, 4)))
 model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(3, 3)))
+model.add(Conv2D(256, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Flatten())
 #Hidden layer:
