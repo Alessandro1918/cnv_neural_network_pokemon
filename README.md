@@ -3,7 +3,7 @@
 A Neural Network used for Image Classification and Computer Vision. How can we balance all the technical terms, specifications and architectural decisions to make this problem more interesting? With Pokemon!
 
 <p align="center">
-  <img width="70%" src="/.github/NN.png" alt="NN_structure"/>
+  <img width="80%" src="/github_assets/NN.png" alt="NN_structure"/>
 </p>
 
 In this code, we will setup a Neural Network that can identify, with a decent level of accuracy, which Pokemon the image contains. While we try to maximize the accuracy, while trying to minimize Dataset size, Training time, and Model size.
@@ -72,7 +72,6 @@ If you want, there is a link for the images used for this example:
 ```
 
 - Use the  model to classify some images from the Test set:
-
 ```
   $ python3 test.py
 ```
@@ -85,13 +84,16 @@ The <code>test.py</code> will plot some images, with the respective classificati
 You can also visualize the Data Augmentation principle here; instead of classify the original images on the Test set, we edit them with the same zooms, flips, shifts and the like we use for the Train test, with pretty good results!
 
 <p align="center">
-  <img width="45%" src="/.github/plot_test_210.png" alt="plot_test_1"/>
-  <img width="45%" src="/.github/plot_test_213.png" alt="plot_test_2"/>
+  <img width="48%" src="/github_assets/plot_test_210.png" alt="plot_test_1"/>
+  <img width="48%" src="/github_assets/plot_test_333.png" alt="plot_test_2"/>
 </p>
 <p align="center">
-  <img width="45%" src="/.github/plot_test_440.png" alt="plot_test_3"/>
-  <img width="45%" src="/.github/plot_test_931.png" alt="plot_test_4"/>
+  <img width="48%" src="/github_assets/plot_test_555.png" alt="plot_test_3"/>
+  <img width="48%" src="/github_assets/plot_test_931.png" alt="plot_test_4"/>
 </p>
+
+## ⭐ Like, Subscribe, Follow!
+Liked the project? Give this repository a Star ⭐!
 
 
 ## 📝 License
