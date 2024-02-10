@@ -1,7 +1,11 @@
-import numpy as np
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
+# import numpy as np
 import json
+
+from flask import Flask, request, render_template
+
+app = Flask(__name__)
 
 def eval(filename):
 
@@ -24,7 +28,7 @@ def eval(filename):
 
     # Predict
     predictions = model.predict(img)[0]
-    print(predictions)                                  # [0.0.05347924, 0.0.03757086, 0.0.7415803, 0.0.16736959]
+    # print(predictions)                                # [0.0.05347924, 0.0.03757086, 0.0.7415803, 0.0.16736959]
     # class_index = np.argmax(predictions)              # 2
     # class_name = CLASSES[class_index]                 # "Pikachu"
 
@@ -33,8 +37,29 @@ def eval(filename):
     for i in range(len(CLASSES)):
         data[CLASSES[i]] = float("{:.4f}".format(predictions[i]))
     result = json.dumps(data, indent=2)
-    print(result)                                       # {"Bulbasaur": 0.0535, "Charmander": 0.0376, "Pikachu": 0.7416, "Squirtle": 0.1674}
+    # print(result)                                     # {"Bulbasaur": 0.0535, "Charmander": 0.0376, "Pikachu": 0.7416, "Squirtle": 0.1674}
     return result
 
+# Test function without server:
+# print(eval("test_pikachu.jpg"))
 
-eval("test_pikachu.jpg")
+@app.post("/eval")
+def get_predictions():
+
+    # uploaded_file = request.form.get("file")
+    uploaded_file = request.files["file"]
+
+    if uploaded_file.filename != '':
+        uploaded_file.save(uploaded_file.filename)
+        
+    # return eval("test_pikachu.jpg")
+    return eval(uploaded_file.filename)
+
+
+@app.get("/eval")
+def render_eval_page():
+    return render_template("eval.html")
+
+# Start server: "python3 server.py"
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=4000, debug=True)
