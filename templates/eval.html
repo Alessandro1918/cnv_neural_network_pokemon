@@ -3,7 +3,7 @@
   <head>
     <script>
 
-      const apiUrl = "http://localhost:4000"
+      const apiUrl = "{{API_URL}}"
 
       function handleSubmit(){
 
@@ -83,7 +83,26 @@
   </head>
 
   <body>    
-    <h1>Hello!</h1>
+    <h2>
+      <a href="https://github.com/Alessandro1918/cnv_neural_network_pokemon">
+        Convolutional Neural Network - Pokemon!
+      </a>
+    </h2>
+
+    <p>A live demo of
+      <a href="https://github.com/Alessandro1918/cnv_neural_network_pokemon">
+        github.com/Alessandro1918/cnv_neural_network_pokemon
+      </a>
+    </p>
+
+    <a href="https://github.com/Alessandro1918/cnv_neural_network_pokemon">
+      <img 
+        src="https://github.com/Alessandro1918/cnv_neural_network_pokemon/blob/main/github_assets/NN.png?raw=true" 
+        alt="NN architecture" 
+        width="400" 
+        height="200"
+      >
+    </a>
 
     <form 
       method="post"
@@ -97,6 +116,7 @@
           type="file" 
           id="user-input-file" 
           name="file" 
+          accept="image/png, image/jpeg"
         />
       </div>
       <div>
