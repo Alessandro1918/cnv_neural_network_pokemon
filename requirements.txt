@@ -1,5 +1,19 @@
-split-folders
-tensorflow
-matplotlib
-numpy
-scikit-learn
+# Train:
+# split-folders
+# tensorflow
+# matplotlib
+# numpy
+# scikit-learn
+
+# Test:
+# tensorflow
+# numpy
+# matplotlib
+
+# Server:
+tensorflow-cpu
+pybase64
+pillow
+load_dotenv
+flask
+waitress
