@@ -11,7 +11,7 @@
 # matplotlib
 
 # Server:
-tensorflow-cpu
+tensorflow    #1.1 Gb
 pybase64
 pillow
 load_dotenv

@@ -14,21 +14,22 @@ load_dotenv()
 from flask import Flask, request, render_template
 from waitress import serve
 
+# Constants
+IM_SHAPE = (200, 200)
+CLASSES = ["Bulbasaur", "Charmander", "Pikachu", "Squirtle"]
+
 app = Flask(__name__)
 
 # def eval(filename):       # V2
 def eval(file_base64):      # V3
 
-    # Constants
-    IM_SHAPE = (200, 200)
-    CLASSES = ["Bulbasaur", "Charmander", "Pikachu", "Squirtle"]
-
-    # Load model
-    model = load_model("model.h5")
-
     # Load image
-    # img = image.load_img(filename, target_size=(IM_SHAPE[0], IM_SHAPE[1]))        # V2: from file using param = filename
-    img = Image.open(BytesIO(base64.b64decode(file_base64))).resize((IM_SHAPE[0], IM_SHAPE[1]))     # V3: from base64 using param = base64 data
+    # img = image.load_img(filename, target_size=(IM_SHAPE[0], IM_SHAPE[1]))        # V2: from file using param = filename (ex: "pikachu.jpg")
+    img = (Image                                                                    # V3: from base64 using param = base64 data (ex: "ADIEHFH...")
+        .open(BytesIO(base64.b64decode(file_base64)))
+        .resize((IM_SHAPE[0], IM_SHAPE[1]))             # target: 200 x 200 pixels
+        .convert("RGB")                                 # remove alpha channel (transparency), if exists
+    )
     # Convert to array
     img = image.img_to_array(img)                       # shape (200, 200, 3), floats from 0-255
     # Re-scale pixels
@@ -84,5 +85,9 @@ def render_eval_page():
 
 # Start server: "python3 server.py"
 if __name__ == "__main__":
+
+    # Load model
+    model = load_model("model.h5")
+
     # app.run(host="0.0.0.0", port=4000, debug=True)        #DEV
     serve(app, host="0.0.0.0", port=4000)                   #PROD
