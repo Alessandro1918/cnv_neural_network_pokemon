@@ -71,7 +71,7 @@ def get_predictions():
     #     uploaded_file.save(uploaded_file.filename)
     # return eval(uploaded_file.filename)
 
-    # V3: encode / decode image file to base64 and don't save the file on the server:
+    # V3: encode / decode image file to base64 as to not save the file on the static server:
     if uploaded_file.filename != '':
         file_base64 = base64.b64encode(uploaded_file.read())
         return eval(file_base64)
@@ -85,6 +85,8 @@ def render_eval_page():
 
 # Start server: "python3 server.py"
 if __name__ == "__main__":
+
+    print("Server online!")
 
     # Load model
     model = load_model("model.h5")
