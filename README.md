@@ -8,6 +8,9 @@ A Neural Network used for Image Classification and Computer Vision. How can we b
 
 In this code, we will setup a Neural Network that can identify, with a decent level of accuracy, which Pokemon the image contains. While we try to maximize the accuracy, while trying to minimize Dataset size, Training time, and Model size.
 
+</br>
+Try it online! [https://cnn-pokemon/eval](https://cnn-pokemon-service-wyclairfnq-rj.a.run.app/eval)
+
 
 ## 🧊 Cool features:
 
@@ -28,6 +31,10 @@ The artificially expanded training dataset can result in a more skillful model, 
 
 
 ## 🗂️ Usage:
+
+Try it online! [https://cnn-pokemon/eval](https://cnn-pokemon-service-wyclairfnq-rj.a.run.app/eval)
+
+Or:
 
 - Download the code:
 ```
