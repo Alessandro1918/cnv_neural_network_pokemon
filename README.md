@@ -8,7 +8,6 @@ A Neural Network used for Image Classification and Computer Vision. How can we b
 
 In this code, we will setup a Neural Network that can identify, with a decent level of accuracy, which Pokemon the image contains. While we try to maximize the accuracy, while trying to minimize Dataset size, Training time, and Model size.
 
-</br>
 Try it online! [https://cnn-pokemon/eval](https://cnn-pokemon-service-wyclairfnq-rj.a.run.app/eval)
 
 
@@ -22,7 +21,6 @@ When passing data to a regular, old-school Neural Network, we break the image in
 
 The CNN, on the other hand, tries to look at the big picture (pun intended!). Instead of isolated pixels, it tries to get specific features in the image, to understand what makes this input different from the others. They do this by performing a “convolution”, that is, a linear operation that involves the multiplication of a set of weights (called ”filter” or “kernel”) with the input, much like a traditional neural network. The application of that filter systematically across the entire input image allows the filter an opportunity to discover that feature anywhere in the image.
 
-Convolutional neural networks do not learn a single filter; they, in fact, learn multiple features in parallel for a given input. It is common for a convolutional layer to learn from 32 to 512 filters in parallel for a given input. This gives the model 32, or even 512, different ways of extracting features from an input, or many different ways of both “learning to see” and after training, many different ways of “seeing” the input data.
 
 ### 📊📊📊 Data Augmentation
 
