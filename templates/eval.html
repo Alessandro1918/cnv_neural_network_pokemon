@@ -1,16 +1,43 @@
 <!DOCTYPE html>
 
   <head>
+
+    <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+
     <script>
 
       const apiUrl = "{{API_URL}}"
+
+      //Reset predictions-div of all it's children (h3, tables, etc)
+      function clearResults(){
+        let predictions_div = document.getElementById("predictions-div")
+        while (predictions_div.hasChildNodes()) {
+          predictions_div.removeChild(predictions_div.firstChild)
+        }
+      }
 
       function handleSubmit(){
 
         event.preventDefault()
 
-        let formData = new FormData()
+        clearResults()
+
+        //Get image file from input element
         let file = document.getElementById("user-input-file").files[0]
+
+        //Init preview image
+        preview = document.createElement("img")
+        preview.setAttribute("id", "user-input-preview")
+        preview.setAttribute("alt", "preview of user input image")
+        preview.setAttribute("width", "200")
+        // preview.setAttribute("height", "100")  //omit this to keep aspect ratio
+
+        //Display preview image
+        preview.setAttribute("src", URL.createObjectURL(file))
+        document.getElementById("predictions-div").appendChild(preview)
+
+        //Add file to API POST request
+        let formData = new FormData()
         formData.append("file", file)
 
         fetch(
@@ -30,12 +57,6 @@
           
             console.log(response)
 
-            //Reset predictions-div
-            // let predictions_div = document.getElementById("predictions-div")
-            // while (predictions_div.hasChildNodes()) {
-            //   predictions_div.removeChild(predictions_div.firstChild);
-            // }
-
             //Add one h3 per object item to a div
             // Object.keys(response).forEach(key => {
             //   const percent = (parseFloat(response[key]) * 100).toFixed(2)
@@ -44,18 +65,12 @@
             //   predictions_div.appendChild(prediction)
             // })
 
-            //Reset table
-            let table = document.getElementById("predictions-table")
-            if (table == null) {
-              table = document.createElement("table")
-              table.setAttribute("id", "predictions-table")
-              document.getElementById("predictions-div").appendChild(table)
-            } else {
-              while (table.hasChildNodes()) {
-                table.removeChild(table.firstChild);
-              }
-            }
-            //Re-add headers
+            //Init table
+            table = document.createElement("table")
+            table.setAttribute("id", "predictions-table")
+            document.getElementById("predictions-div").appendChild(table)
+
+            //Add table headers
             const tr = document.createElement("tr")
             const th1 = document.createElement("th")
             const th2 = document.createElement("th")
@@ -82,10 +97,10 @@
     </script>
   </head>
 
-  <body>    
+  <body>
     <h2>
       <a href="https://github.com/Alessandro1918/cnv_neural_network_pokemon">
-        Convolutional Neural Network - Pokemon!
+        Convolutional Neural Network of Pokemon!
       </a>
     </h2>
 
@@ -109,24 +124,24 @@
       enctype="multipart/form-data"
     >
       <div>
-        <label for="file">Choose a pokemon image file to upload:</label>
-        </br>
-        <!-- "Input file" element: -->
-        <input 
-          type="file" 
-          id="user-input-file" 
-          name="file" 
-          accept="image/png, image/jpeg"
-        />
+        <label class="file-upload-input">
+          <input 
+            type="file" 
+            id="user-input-file" 
+            accept="image/png, image/jpeg"
+            onchange="handleSubmit()"
+          />
+          Choose a pokemon image file to upload:
+        </label>
       </div>
-      <div>
-        <!-- Submit button: -->
-        <input 
-          type="submit" 
-          value="Eval" 
+      <!-- <div>
+        <button 
+          class="submit-form-button"
           onclick="handleSubmit()"
         >
-      </div>
+          Eval
+        </button>
+      </div> -->
     </form>
 
     <div id="predictions-div"></div>
