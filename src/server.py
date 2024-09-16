@@ -16,6 +16,7 @@ from waitress import serve
 
 # Constants
 IM_SHAPE = (200, 200)
+PATH_MODEL = os.path.join('src', 'model.h5')
 CLASSES = ["Bulbasaur", "Charmander", "Pikachu", "Squirtle"]
 
 app = Flask(__name__)
@@ -40,7 +41,7 @@ def eval(file_base64):      # V3
 
     # Predict
     predictions = model.predict(img)[0]
-    # print(predictions)                                # [0.0.05347924, 0.0.03757086, 0.0.7415803, 0.0.16736959]
+    # print(predictions)                                # [0.05347924, 0.03757086, 0.7415803, 0.16736959]
     # class_index = np.argmax(predictions)              # 2
     # class_name = CLASSES[class_index]                 # "Pikachu"
 
@@ -56,7 +57,12 @@ def eval(file_base64):      # V3
 # print(eval("test_pikachu.jpg"))
 
 
-# Will be called by frontend's "/eval" page. Get image file from request form, and use it on the "eval" function.
+@app.get("/")
+def render_home_page():
+    return render_template("home.html")
+
+
+# Backend route. Get image file from request form, and use it on the "eval" function.
 @app.post("/eval")
 def get_predictions():
 
@@ -77,7 +83,7 @@ def get_predictions():
         return eval(file_base64)
 
 
-# Frontend page. Will make a POST request to "/eval"
+# Frontend page. Will make a POST request to "/eval" route.
 @app.get("/eval")
 def render_eval_page():
     API_URL = os.getenv("API_URL")
@@ -86,10 +92,12 @@ def render_eval_page():
 # Start server: "python3 server.py"
 if __name__ == "__main__":
 
-    print("Server online!")
+    PORT = 4000
+
+    print(f"Server online @ http://localhost:{PORT}")
 
     # Load model
-    model = load_model("model.h5")
+    model = load_model(PATH_MODEL)
 
-    # app.run(host="0.0.0.0", port=4000, debug=True)        #DEV
-    serve(app, host="0.0.0.0", port=4000)                   #PROD
+    # app.run(host="0.0.0.0", port=PORT, debug=True)        #DEV - flask server
+    serve(app, host="0.0.0.0", port=PORT)                   #PROD - waitress server

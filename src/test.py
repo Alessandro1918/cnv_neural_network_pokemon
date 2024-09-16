@@ -1,3 +1,5 @@
+import os
+
 # Load data
 # from tensorflow import keras
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -10,7 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Consts:
-DATA_DIR = 'dataset_splited/test'
+PATH_DATASET = os.path.join('src', 'dataset_splited', 'test')
+PATH_MODEL = os.path.join('src', 'model.h5')
 IM_SHAPE = (200, 200)
 SEED = 931
 BATCH_SIZE = 4
@@ -31,7 +34,7 @@ data_generator = ImageDataGenerator(
 )
 # Load data
 data_generator = data_generator.flow_from_directory(
-    DATA_DIR, 
+    PATH_DATASET, 
     target_size=IM_SHAPE, 
     shuffle=True, 
     seed=SEED,
@@ -43,7 +46,7 @@ classes = list(data_generator.class_indices.keys())
 print('Classes: ' + str(classes))   #Classes: ['Bulbasaur', 'Charmander', 'Pikachu', 'Squirtle']
 
 # Load model
-model = load_model('model.h5')
+model = load_model(PATH_MODEL)
 
 # Plot some examples
 plt.figure(figsize=(10, 10))
