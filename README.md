@@ -35,8 +35,9 @@ Try it online! [https://cnn-pokemon/eval](https://cnn-pokemon-service-wyclairfnq
 Or:
 
 - Download the code:
-```
+```bash
   $ git clone https://github.com/Alessandro1918/cnv_neural_network_pokemon.git
+  $ cd cnv_neural_network_pokemon      #change to that directory
 ```
 
 - Assemble the dataset:</br>
@@ -60,9 +61,16 @@ If you want, there is a link for the images used for this example:
   https://www.dropbox.com/sh/vkmeeirmi4nb1tr/AACUTojKyBnJ7_FoMzPX1Gp5a?dl=0
 ```
 
-- Install the required libs:
+Optional - Start a [Python Virtual Environment](https://docs.python.org/3/library/venv.html):
+```bash
+  $ pip3 install virtualenv            #download virtualenv package
+  $ python3 -m venv .venv              #create ".venv" folder at current dir
+  $ . .venv/bin/activate               #start the environment
+  $ pip install --upgrade pip          #update pip
 ```
-  $ cd cnv_neural_network_pokemon      #change to that directory
+
+- Install the required libs:
+```bash
   $ pip3 install -r requirements.txt   #download dependencies
 ```
 
@@ -73,13 +81,20 @@ If you want, there is a link for the images used for this example:
   - Show the values of Loss, Accuracy, and Plot the Training Curve;
   - Export the model for future use;
 ```
-  $ python3 cnn.py
+  $ python3 src/cnn.py
 ```
 
 - Use the  model to classify some images from the Test set:
 ```
-  $ python3 test.py
+  $ python3 src/test.py
 ```
+
+- Host a Python http server to test it from your web browser:
+```
+  $ python3 src/test.py
+```
+
+Or, again, you can try it online! [https://cnn-pokemon/eval](https://cnn-pokemon-service-wyclairfnq-rj.a.run.app/eval)
 
 
 ## ▶️ Demo time!
