@@ -20,17 +20,18 @@ SEED = 339
 BATCH_SIZE = 8
 IM_SHAPE = (200, 200)
 EPOCHS = 30
-DATASET_DIR = 'dataset'
-DATASET_SPLITED_DIR = 'dataset_splited'
-TRAIN_DIR = os.path.join(DATASET_SPLITED_DIR, 'train')      #'dataset_splited/train'
-TEST_DIR = os.path.join(DATASET_SPLITED_DIR, 'test')        #'dataset_splited/test'
+PATH_DATASET = os.path.join('src', 'dataset')                       #src/dataset
+PATH_DATASET_SPLITED = os.path.join('src', 'dataset_splited')       #src/dataset_splited
+PATH_TRAIN = os.path.join(PATH_DATASET_SPLITED, 'train')            #src/dataset_splited/train
+PATH_TEST = os.path.join(PATH_DATASET_SPLITED, 'test')
+PATH_MODEL = os.path.join('src', 'model.h5') 
 
 # Split Input data into Training, Validation, and Test
-shutil.rmtree(DATASET_SPLITED_DIR, ignore_errors=True)      # clear dir, if exists
+shutil.rmtree(PATH_DATASET_SPLITED, ignore_errors=True)             # clear dir, if exists
 print('Split data:')
 splitfolders.ratio(
-    DATASET_DIR, 
-    output=DATASET_SPLITED_DIR, 
+    PATH_DATASET, 
+    output=PATH_DATASET_SPLITED, 
     seed=SEED , 
     ratio=(.7, 0, .3)
 )
@@ -53,7 +54,7 @@ train_generator = ImageDataGenerator(
     fill_mode='nearest'
 )
 train_generator = train_generator.flow_from_directory(
-    TRAIN_DIR, 
+    PATH_TRAIN, 
     target_size=IM_SHAPE, 
     shuffle=True, 
     seed=SEED,
@@ -65,7 +66,7 @@ train_generator = train_generator.flow_from_directory(
 print('Validation data:')
 validation_generator = ImageDataGenerator(rescale=1./255, validation_split=0.2)
 validation_generator = validation_generator.flow_from_directory(
-    TRAIN_DIR, 
+    PATH_TRAIN, 
     target_size=IM_SHAPE, 
     shuffle=False, 
     seed=SEED, 
@@ -76,7 +77,7 @@ validation_generator = validation_generator.flow_from_directory(
 print('Test data:')
 test_generator = ImageDataGenerator(rescale=1./255)
 test_generator = test_generator.flow_from_directory(
-    TEST_DIR, 
+    PATH_TEST, 
     target_size=IM_SHAPE, 
     shuffle=False, 
     seed=SEED,
@@ -129,7 +130,7 @@ model.compile(
 #Callback to save the best model
 callbacks_list = [
     ModelCheckpoint(
-        filepath='model.h5',
+        filepath=PATH_MODEL,
         monitor='accuracy',     #options: "accuracy", "val_loss" 
         save_best_only=True, 
         verbose=1
@@ -191,7 +192,7 @@ plt.close()
 print('\nEvaluating the model:')
 
 # Load the best saved model
-model = load_model('model.h5')
+model = load_model(PATH_MODEL)
 
 # Training dataset
 #score = model.evaluate_generator(...) # Deprecated
