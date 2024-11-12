@@ -80,18 +80,19 @@ Optional - Start a [Python Virtual Environment](https://docs.python.org/3/librar
   - Train the CNN;
   - Show the values of Loss, Accuracy, and Plot the Training Curve;
   - Export the model for future use;
-```
+```bash
   $ python3 src/cnn.py
 ```
 
 - Use the  model to classify some images from the Test set:
-```
+```bash
   $ python3 src/test.py
 ```
 
 - Host a Python http server to test it from your web browser:
-```
-  $ python3 src/test.py
+```bash
+  $ python3 src/server.py
+  # wait for the message "Server online") on the terminal, and check http://localhost:4000/eval
 ```
 
 Or, again, you can try it online! [https://cnn-pokemon/eval](https://cnn-pokemon-service-wyclairfnq-rj.a.run.app/eval)
