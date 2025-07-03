@@ -1,46 +1,54 @@
-#Process data
+# Process data
 import os, shutil, splitfolders
-#from tensorflow.keras.preprocessing import image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-#Create CNN
+# Create CNN
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
-#Train
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+# Train
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, BackupAndRestore
 #Learning curves
 import matplotlib.pyplot as plt
-#Eval model
+# Eval model
 from tensorflow.keras.models import load_model
-#Reports
+# Reports
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
 # Constants:
 SEED = 339
-BATCH_SIZE = 8
-IM_SHAPE = (200, 200)
 EPOCHS = 30
+BATCH_SIZE = 8
+IMG_SIZE = (200, 200)                                               #height, width
 PATH_DATASET = os.path.join('src', 'dataset')                       #src/dataset
 PATH_DATASET_SPLITED = os.path.join('src', 'dataset_splited')       #src/dataset_splited
 PATH_TRAIN = os.path.join(PATH_DATASET_SPLITED, 'train')            #src/dataset_splited/train
-PATH_TEST = os.path.join(PATH_DATASET_SPLITED, 'test')
+PATH_TEST = os.path.join(PATH_DATASET_SPLITED, 'test')              #src/dataset_splited/test
 PATH_MODEL = os.path.join('src', 'model.h5') 
+PATH_BACKUP = os.path.join('src', 'backup_model')
 
-# Split Input data into Training, Validation, and Test
+# Datasets:
+# https://www.kaggle.com/datasets/thedagger/pokemon-generation-one
+# https://www.kaggle.com/datasets/mikoajkolman/pokemon-images-first-generation17000-files
+# https://www.kaggle.com/datasets/rogerkoala/first-gen-pokemon
+# https://www.kaggle.com/datasets/unexpectedscepticism/11945-pokemon-from-first-gen
+# https://www.kaggle.com/datasets/bhawks/pokemon-generation-one-22k
+# https://pyimagesearch.com/2017/12/04/how-to-create-a-deep-learning-dataset-using-google-images/
+
+# Split datasets into Training, Validation, and Test
+print('Spliting data...')
 shutil.rmtree(PATH_DATASET_SPLITED, ignore_errors=True)             # clear dir, if exists
-print('Split data:')
 splitfolders.ratio(
     PATH_DATASET, 
     output=PATH_DATASET_SPLITED, 
     seed=SEED , 
-    ratio=(.7, 0, .3)
+    ratio=(.8, 0, .2)
 )
 # ratio=(.8, 0, .2): Between Train-Test (use validation_split = 0.2 and subset = "training" / "validation")
 # ratio=(.6, .2, .2)): Between Train-Val-Test (no need of validation_split, get val_generator data from VAL_DIR='splited/val')
 
 print('Training data:')
-#Without data augmentation
-#train_generator = ImageDataGenerator(rescale=1./255, validation_split=0.2)       # Between Train-Validation
+# Without data augmentation
+# train_generator = ImageDataGenerator(rescale=1./255, validation_split=0.2)       # Between Train-Validation
 # With data augmentation:
 train_generator = ImageDataGenerator(
     rescale=1./255, 
@@ -55,7 +63,7 @@ train_generator = ImageDataGenerator(
 )
 train_generator = train_generator.flow_from_directory(
     PATH_TRAIN, 
-    target_size=IM_SHAPE, 
+    target_size=IMG_SIZE, 
     shuffle=True, 
     seed=SEED,
     class_mode='categorical', 
@@ -64,21 +72,25 @@ train_generator = train_generator.flow_from_directory(
 )
 
 print('Validation data:')
-validation_generator = ImageDataGenerator(rescale=1./255, validation_split=0.2)
+validation_generator = ImageDataGenerator(
+  rescale=1./255, 
+  validation_split=0.2
+)
 validation_generator = validation_generator.flow_from_directory(
     PATH_TRAIN, 
-    target_size=IM_SHAPE, 
+    target_size=IMG_SIZE, 
     shuffle=False, 
     seed=SEED, 
     class_mode='categorical',
-    batch_size=BATCH_SIZE, subset="validation"
+    batch_size=BATCH_SIZE, 
+    subset="validation"
 )
 
 print('Test data:')
 test_generator = ImageDataGenerator(rescale=1./255)
 test_generator = test_generator.flow_from_directory(
     PATH_TEST, 
-    target_size=IM_SHAPE, 
+    target_size=IMG_SIZE, 
     shuffle=False, 
     seed=SEED,
     class_mode='categorical', 
@@ -93,15 +105,17 @@ print('Classes: ' + str(classes))
 # https://www.datacamp.com/tutorial/convolutional-neural-networks-python
 # https://pyimagesearch.com/2018/04/16/keras-and-convolutional-neural-networks-cnns/
 # https://towardsdatascience.com/building-a-convolutional-neural-network-cnn-in-keras-329fbbadc5f5
+
 model = Sequential()
-#Input layer:
+
+# Input layer:
 model.add(Conv2D(
     64,                     # n. of filters to learn
     kernel_size=(3, 3),     # shape of the filter
     activation='relu',      # name of the activation_function
     input_shape=(
-        IM_SHAPE[0],        # rows
-        IM_SHAPE[1],        # collumns
+        IMG_SIZE[0],        # rows
+        IMG_SIZE[1],        # collumns
         3                   # channels
     )
 ))
@@ -111,10 +125,12 @@ model.add(MaxPooling2D(pool_size=(3, 3)))
 model.add(Conv2D(256, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Flatten())
-#Hidden layer:
+
+# Hidden layer:
 model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.2))
-#Output layer:
+
+# Output layer:
 model.add(Dense(len(classes), activation='softmax'))
 
 # Print details about each layer of the model
@@ -127,7 +143,7 @@ model.compile(
     metrics=['accuracy']
 )
 
-#Callback to save the best model
+# Callback to save the best model
 callbacks_list = [
     ModelCheckpoint(
         filepath=PATH_MODEL,
@@ -139,10 +155,15 @@ callbacks_list = [
         monitor='accuracy', 
         patience=10, 
         verbose=1
+    ),
+    BackupAndRestore(
+        backup_dir=PATH_BACKUP,
+        save_freq='epoch',
+        delete_checkpoint=True
     )
 ]
 
-#Training
+# Training
 history = model.fit(
     train_generator,
     steps_per_epoch=train_generator.samples // BATCH_SIZE,
@@ -150,14 +171,14 @@ history = model.fit(
     callbacks=callbacks_list,
     validation_data=validation_generator,
     validation_steps=validation_generator.samples // BATCH_SIZE,
-    verbose=0
+    verbose=1
 )
 
-#Learning Curves
+# Learning Curves
 history_dict = history.history
 plt.figure(figsize=(10, 10))
 
-#Loss
+# Loss
 #plt.subplot(2,1,1)
 #loss_values = history_dict['loss']
 #val_loss_values = history_dict['val_loss']
@@ -169,7 +190,7 @@ plt.figure(figsize=(10, 10))
 #plt.ylabel('Loss')
 #plt.legend()
 
-#Accuracy
+# Accuracy
 #plt.subplot(2,1,2)
 acc_values = history_dict['accuracy']
 val_acc_values = history_dict['val_accuracy']
@@ -181,14 +202,14 @@ plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
 
-#Show
+# Show
 #plt.show()
-#Save
+# Save
 #filename = sys.argv[0].split('/')[-1]
 plt.savefig('plot_learning.png')
 plt.close()
 
-#Evaluating the model
+# Evaluating the model
 print('\nEvaluating the model:')
 
 # Load the best saved model
@@ -212,7 +233,7 @@ print('Test accuracy:', score[1])
 
 # Reports
 
-#Confusion Matrix
+# Confusion Matrix
 #Y_pred = model.predict_generator(test_generator)   # Deprecated
 Y_pred = model.predict(test_generator)
 y_pred = np.argmax(Y_pred, axis=1)
