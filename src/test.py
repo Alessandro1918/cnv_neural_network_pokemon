@@ -11,10 +11,10 @@ import numpy as np
 # Plot some images
 import matplotlib.pyplot as plt
 
-# Consts:
+# Constants:
 PATH_DATASET = os.path.join('src', 'dataset_splited', 'test')
 PATH_MODEL = os.path.join('src', 'model.h5')
-IM_SHAPE = (200, 200)
+IMG_SIZE = (200, 200)
 SEED = 931
 BATCH_SIZE = 4
 
@@ -35,7 +35,7 @@ data_generator = ImageDataGenerator(
 # Load data
 data_generator = data_generator.flow_from_directory(
     PATH_DATASET, 
-    target_size=IM_SHAPE, 
+    target_size=IMG_SIZE, 
     shuffle=True, 
     seed=SEED,
     class_mode='categorical', 
@@ -43,26 +43,25 @@ data_generator = data_generator.flow_from_directory(
 )
 
 classes = list(data_generator.class_indices.keys())
-print('Classes: ' + str(classes))   #Classes: ['Bulbasaur', 'Charmander', 'Pikachu', 'Squirtle']
+print('Classes: ' + str(classes))       #Classes: ['Bulbasaur', 'Charmander', 'Pikachu', 'Squirtle']
 
 # Load model
 model = load_model(PATH_MODEL)
 
-# Plot some examples
+# Plot 9 examples in a 3x3 grid
 plt.figure(figsize=(10, 10))
 for i in range(9):
-    #gera subfigures
     batch = data_generator.next()[0]    # shape (4, 200, 200, 3), floats from 0-255
     item = batch[0]                     # first item of the 4 elements array
     rescaled = item / 255               # shape (200, 200, 3), floats from 0-1
     image = item.astype('uint8')        # shape (200, 200, 3), ints from 0-255    
-    reshaped = rescaled.reshape(1, IM_SHAPE[0], IM_SHAPE[1], 3)     # (200, 200, 3) -> (1, 200, 200, 3)
+    reshaped = rescaled.reshape(1, IMG_SIZE[0], IMG_SIZE[1], 3)     # (200, 200, 3) -> (1, 200, 200, 3)
     predictions = model.predict(reshaped)[0]                        # [0, 0.1, 0.6, 0.3]
     print(predictions)
     prediction_class_index = np.argmax(predictions)                 # 2
     prediction_class_name = classes[prediction_class_index]         # "Pikachu"
-    title = "{} ({:.2f}%)".format(prediction_class_name, 100 * np.max(predictions))     # "Pikachu (60%)"
-    plt.subplot(330 + 1 + i).set_title(title)
+    title = f"{prediction_class_name} ({100 * np.max(predictions):.2f}%)"     # "Pikachu (60%)"
+    plt.subplot(3, 3, i+1).set_title(title)
     plt.imshow(image)
 #plt.show()
 plt.savefig('plot_test_' + str(SEED) + '.png')
